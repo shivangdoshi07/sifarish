@@ -2,17 +2,11 @@ package com.legacy.sifarish.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.facebook.CallbackManager;
@@ -33,7 +27,6 @@ import com.legacy.sifarish.util.Constants;
 
 import org.json.JSONObject;
 
-import java.util.Arrays;
 import java.util.Set;
 
 public class LoginActivity extends AppCompatActivity {
@@ -110,44 +103,14 @@ public class LoginActivity extends AppCompatActivity {
                 break;
             case Constants.REQUEST_CODE_FSQ_TOKEN_EXCHANGE :
                 AccessTokenResponse tokenResponse = FoursquareOAuth.getTokenFromResult(resultCode, data);
-                Log.d(TAG,tokenResponse.getAccessToken());
+                if(tokenResponse != null)
+                    Log.d(TAG,tokenResponse.getAccessToken());
+                else
+                    Log.d(TAG,"No Response");
                 break;
         }
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
-
-//    @Override
-//    public View onCreateView(
-//            LayoutInflater inflater,
-//            ViewGroup container,
-//            Bundle savedInstanceState) {
-//        View view = inflater.inflate(R.layout.splash, container, false);
-//
-//        loginButton = (LoginButton) view.findViewById(R.id.login_button);
-//        loginButton.setReadPermissions("user_friends");
-//        // If using in a fragment
-//        loginButton.setFragment(this);
-//        // Other app specific specialization
-//
-//        // Callback registration
-//        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-//            @Override
-//            public void onSuccess(LoginResult loginResult) {
-//                // App code
-//            }
-//
-//            @Override
-//            public void onCancel() {
-//                // App code
-//            }
-//
-//            @Override
-//            public void onError(FacebookException exception) {
-//                // App code
-//            }
-//        });
-//        return view;
-//    }
 
     @Override
     protected void onResume() {
@@ -184,4 +147,5 @@ public class LoginActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

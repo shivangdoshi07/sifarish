@@ -17,6 +17,9 @@ import android.view.View;
 import com.legacy.sifarish.R;
 import com.legacy.sifarish.fragments.Question1;
 import com.legacy.sifarish.fragments.Question2;
+import com.legacy.sifarish.fragments.Question3;
+import com.legacy.sifarish.fragments.Question4;
+import com.legacy.sifarish.fragments.Question5;
 
 public class QuestionaireActivity extends AppCompatActivity {
 
@@ -45,8 +48,11 @@ public class QuestionaireActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+
+                Snackbar.make(view, "Awesome!", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                if(mPager.getCurrentItem() < NUM_QUES)
+                    mPager.setCurrentItem(mPager.getCurrentItem() + 1);
             }
         });
     }
@@ -102,6 +108,12 @@ public class QuestionaireActivity extends AppCompatActivity {
                     return new Question1();
                 case 1:
                     return new Question2();
+                case 2:
+                    return new Question3();
+                case 3:
+                    return new Question4();
+                case 4:
+                    return new Question5();
                 default:
                     return new Question1();
             }

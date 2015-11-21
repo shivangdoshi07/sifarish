@@ -29,6 +29,7 @@ import com.legacy.sifarish.R;
 import com.legacy.sifarish.util.Constants;
 import com.squareup.okhttp.OkHttpClient;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -68,7 +69,11 @@ public class LoginActivity extends AppCompatActivity {
                             public void onCompleted(
                                     JSONObject object,
                                     GraphResponse response) {
-                                Log.d(TAG,response.toString());
+                                try {
+                                    Log.d(TAG, response.getJSONObject().getString("name"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         });
                 Bundle parameters = new Bundle();
@@ -87,7 +92,6 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("onError", "in onCreate");
             }
         });
-        Log.d("registerCallback", "after");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
         Button fsloginButton = (Button) findViewById(R.id.fslogin);
@@ -96,98 +100,11 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = FoursquareOAuth.getConnectIntent(getApplicationContext(), Constants.CLIENT_ID);
                 startActivityForResult(intent, Constants.REQUEST_CODE_FSQ_CONNECT);
-                Log.d("onCreate", String.valueOf(Constants.REQUEST_CODE_FSQ_CONNECT));
             }
         });
 /////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
-//    private static ArrayList<FoursquareVenue> parseFoursquare(final String response) {
-//
-//        ArrayList<FoursquareVenue> temp = new ArrayList<FoursquareVenue>();
-//        try {
-//
-//            // make an jsonObject in order to parse the response
-//            JSONObject jsonObject = new JSONObject(response);
-//
-//            // make an jsonObject in order to parse the response
-//            if (jsonObject.has("response")) {
-//                if (jsonObject.getJSONObject("response").has("venues")) {
-//                    JSONArray jsonArray = jsonObject.getJSONObject("response").getJSONArray("venues");
-//
-//                    for (int i = 0; i < jsonArray.length(); i++) {
-//                        FoursquareVenue poi = new FoursquareVenue();
-//                        if (jsonArray.getJSONObject(i).has("name")) {
-//                            poi.setName(jsonArray.getJSONObject(i).getString("name"));
-//
-//                            if (jsonArray.getJSONObject(i).has("location")) {
-//                                if (jsonArray.getJSONObject(i).getJSONObject("location").has("address")) {
-//                                    if (jsonArray.getJSONObject(i).getJSONObject("location").has("city")) {
-//                                        poi.setCity(jsonArray.getJSONObject(i).getJSONObject("location").getString("city"));
-//                                    }
-//                                    if (jsonArray.getJSONObject(i).has("categories")) {
-//                                        if (jsonArray.getJSONObject(i).getJSONArray("categories").length() > 0) {
-//                                            if (jsonArray.getJSONObject(i).getJSONArray("categories").getJSONObject(0).has("icon")) {
-//                                                poi.setCategory(jsonArray.getJSONObject(i).getJSONArray("categories").getJSONObject(0).getString("name"));
-//                                            }
-//                                        }
-//                                    }
-//                                    temp.add(poi);
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return new ArrayList<FoursquareVenue>();
-//        }
-//        return temp;
-//
-//    }
-
-
-//    private class fourquare extends AsyncTask {
-//
-//        String temp;
-//        @Override
-//        protected String doInBackground(Object[] params) {
-//            // make Call to the url
-//            temp = makeCall("https://api.foursquare.com/v2/venues/search?client_id=" + Constants.CLIENT_ID + "&client_secret=" + Constants.CLIENT_SECRET + "&v=20130815&ll=40.7463956,-73.9852992");
-//            return "";
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            // we can start a progress bar here
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//            if (temp == null) {
-//                // we have an error to the call
-//                // we can also stop the progress bar
-//            } else {
-//                // all things went right
-//                // parseFoursquare venues search result
-//                venuesList = (ArrayList) parseFoursquare(temp);
-//                List listTitle = new ArrayList();
-//                for (int i = 0; i < venuesList.size(); i++) {
-//                    // make a list of the venus that are loaded in the list.
-//                    // show the name, the category and the city
-//                    String name = venuesList.get(i).toString();
-//                    Log.d("Inside onPostExecute", name);
-////                    Log.d(i, venuesList.get(i) + ", " + venuesList.get(i).getCategory() + "" + venuesList.get(i).getCity());
-//                }
-//                // set the results to the list
-//                // and show them in the xml
-////                myAdapter = new ArrayAdapter(AndroidFoursquare.this, R.layout.row_layout, R.id.listText, listTitle);
-////                setListAdapter(myAdapter);
-//            }
-//        }
-//    }
 
 @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -198,16 +115,12 @@ public class LoginActivity extends AppCompatActivity {
         switch (requestCode) {
             case Constants.REQUEST_CODE_FSQ_CONNECT :
                 AuthCodeResponse codeResponse = FoursquareOAuth.getAuthCodeFromResult(resultCode, data);
-                Log.d("inside OnActivity", "hello world");
                 Intent intent = FoursquareOAuth.getTokenExchangeIntent(this, Constants.CLIENT_ID, Constants.CLIENT_SECRET, codeResponse.getCode());
                 startActivityForResult(intent, Constants.REQUEST_CODE_FSQ_TOKEN_EXCHANGE);
                 break;
             case Constants.REQUEST_CODE_FSQ_TOKEN_EXCHANGE :
                 AccessTokenResponse tokenResponse = FoursquareOAuth.getTokenFromResult(resultCode, data);
-
                 token = tokenResponse.getAccessToken();
-                Log.d("Token : ", token);
-
                 BackgroundTask task = new BackgroundTask();
                 task.execute();
                 break;
@@ -216,8 +129,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private class BackgroundTask extends AsyncTask<Void, Void,
-            String> {
+    private class BackgroundTask extends AsyncTask<Void, Void, String> {
         RestAdapter restAdapter;
 
         @Override
@@ -228,7 +140,6 @@ public class LoginActivity extends AppCompatActivity {
                     .setLogLevel(RestAdapter.LogLevel.FULL)
                     .setClient(new OkClient(okHttpClient))
                     .build();
-
         }
 
         @Override
@@ -240,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
             Log.d("doInBackground : ",searchResults.meta.code);
             Log.d("Request ID : ",searchResults.meta.requestId);
             try {
-                System.out.println("SYSO,"+searchResults.toString());
+                System.out.println("SYSO"+searchResults.toString());
             } catch (Exception e) {
                 System.out.print("in catch");
                 e.printStackTrace();
@@ -250,21 +161,19 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String curators) {
-//            textView.setText(curators + "\n\n");
+            //textView.setText(curators + "\n\n");
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
         AppEventsLogger.activateApp(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
         AppEventsLogger.deactivateApp(this);
     }
 
@@ -286,7 +195,6 @@ public class LoginActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

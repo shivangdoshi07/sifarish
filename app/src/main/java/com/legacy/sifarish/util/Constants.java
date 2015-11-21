@@ -8,4 +8,5 @@ public class Constants {
     public static String CLIENT_SECRET = "ZGFYAZ3AEPEFNBDIDYYN1UUSAS0ZYE2UJZ4HOCIE1LL2YBIR";
     public final static int REQUEST_CODE_FSQ_CONNECT = 200;
     public final static int REQUEST_CODE_FSQ_TOKEN_EXCHANGE = 201;
+    public final static String PREF_CONST = "user_details";
 }

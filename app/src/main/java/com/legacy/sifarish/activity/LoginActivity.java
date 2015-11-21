@@ -37,6 +37,7 @@ import java.util.Set;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 
+
 public class LoginActivity extends AppCompatActivity {
     ArrayList venuesList;
     String token ="";
@@ -203,6 +204,7 @@ public class LoginActivity extends AppCompatActivity {
                 break;
             case Constants.REQUEST_CODE_FSQ_TOKEN_EXCHANGE :
                 AccessTokenResponse tokenResponse = FoursquareOAuth.getTokenFromResult(resultCode, data);
+
                 token = tokenResponse.getAccessToken();
                 Log.d("Token : ", token);
 
@@ -212,6 +214,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
+
 
     private class BackgroundTask extends AsyncTask<Void, Void,
             String> {
@@ -286,4 +289,5 @@ public class LoginActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

@@ -7,11 +7,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Login"
+        android:text="Connect Sifarish via"
         android:id="@+id/textViewLogin"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="55dp" />
+        android:layout_marginTop="130dp" />
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
@@ -24,8 +24,8 @@
         android:layout_centerVertical="true"/>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="185dp"
+        android:layout_height="35dp"
         android:text="FourSquare"
         android:id="@+id/fslogin"
         android:layout_above="@+id/login_button"

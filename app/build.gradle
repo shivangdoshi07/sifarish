@@ -26,4 +26,6 @@ dependencies {
     compile 'com.android.support:design:23.1.0'
     compile 'com.facebook.android:facebook-android-sdk:4.6.0'
     compile 'com.foursquare:foursquare-android-oauth:1.0.3'
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
 }

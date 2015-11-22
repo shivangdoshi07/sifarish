@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Sifarish</string>
     <string name="action_settings">Settings</string>
-    <string name="facebook_app_id">1073773349333824</string>
+    <string name="facebook_app_id">927666277322122</string>
 
     <string-array name="professions">
         <item>Student</item>

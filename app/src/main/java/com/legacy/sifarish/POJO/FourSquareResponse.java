@@ -1,10 +1,9 @@
 package com.legacy.sifarish.POJO;
 
+import android.util.Log;
+
 import java.util.List;
 
-/**
- * Created by Saumeel on 11/20/2015.
- */
 public class FourSquareResponse {
     public Meta meta;
     public Response response;
@@ -38,12 +37,24 @@ public class FourSquareResponse {
     @Override
     public String toString(){
         String checkintypes = "";
+        Log.d("toString ","before reponse checkins ");
         Checkins checkins = response.checkins;
+        Log.d("Checkinss : ",checkins.toString());
+        Log.d("toString ","after reponse checkins ");
         for(checkinItems item : checkins.items){
             for(checkinCategory cat : item.venue.categories){
                 checkintypes += cat.name + ",";
+                Log.d("toString ","inside for for");
             }
+            Log.d("toString ","inside for");
         }
-        return checkintypes.substring(0,checkintypes.length()-1);
+        Log.d("toString ","outside for");
+        if (checkins.count>0) {
+            Log.d("sau", "inside if");
+            return checkintypes.substring(0, checkintypes.length() - 1);
+        }
+        else
+            return "";
+
     }
 }

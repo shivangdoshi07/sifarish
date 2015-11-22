@@ -1,6 +1,7 @@
 package com.legacy.sifarish.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -33,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 
 import retrofit.RestAdapter;
@@ -40,11 +44,21 @@ import retrofit.client.OkClient;
 
 
 public class LoginActivity extends AppCompatActivity {
+    String fbID = "";
+    String fbName="";
+    String fbUserCity="";
+    String fbBirthday ="";
+    String fbGender = "";
+    String fbEmail ="";
+    String fbHomeTown = ""; // whole address eg borivali, mumbai, india.
+    String city ="";
+    String country = "";
     ArrayList venuesList;
     String token ="";
     String API_URL = "https://api.foursquare.com/v2";
     CallbackManager callbackManager;
-    private  final String TAG = "LoginActivity";
+
+    private final String TAG = "LoginActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,33 +67,75 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         callbackManager = CallbackManager.Factory.create();
+
         LoginButton loginButton = (LoginButton)findViewById(R.id.login_button);
-        loginButton.setReadPermissions("user_about_me,user_birthday,user_events");
+        loginButton.setReadPermissions(Arrays.asList("user_birthday", "email","user_location", "user_hometown","public_profile"));
         Log.d("registerCallback", "before");
+
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Set<String> permissionSet = loginResult.getAccessToken().getPermissions();
                 String token = loginResult.getAccessToken().getToken();
-
-                GraphRequest request = GraphRequest.newMeRequest(
-                        loginResult.getAccessToken(),
-                        new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(
-                                    JSONObject object,
-                                    GraphResponse response) {
-                                try {
-                                    Log.d(TAG, response.getJSONObject().getString("name"));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,events");
-                request.setParameters(parameters);
-                request.executeAsync();
+//
+//                GraphRequest request = GraphRequest.newMeRequest(
+//                        loginResult.getAccessToken(),
+//                        new GraphRequest.GraphJSONObjectCallback() {
+//                            @Override
+//                            public void onCompleted(
+//                                    JSONObject object,
+//                                    GraphResponse response) {
+//                                try {
+//                                    Log.d(TAG, "START");
+//                                    Log.d(TAG, response.toString());
+//                                    fbName = response.getJSONObject().getString("name");
+//                                    fbID = response.getJSONObject().getString("id");
+//                                    fbGender = response.getJSONObject().getString("gender");
+//                                    fbBirthday = response.getJSONObject().getString("birthday");
+//                                    fbHomeTown = response.getJSONObject().getJSONObject("hometown").getString("name");
+//                                    //split to city and country
+//                                    String splitArray[] = fbHomeTown.split(",");
+//                                    if (splitArray.length ==2) {
+//                                        city = splitArray[1];
+//                                        country = splitArray[0];
+//                                    }
+//                                    else {
+//                                        city = splitArray[1];
+//                                        country = splitArray[2];
+//                                    }
+//
+//
+//                                    fbEmail = response.getJSONObject().getString("email");
+//
+//                                    SharedPreferences.Editor editor = getSharedPreferences(Constants.PREF_CONST, MODE_PRIVATE).edit();
+//                                    editor.putString("name", fbName);
+//                                    editor.putString("idName", fbID);
+//                                    editor.putString("hometown",fbHomeTown);
+//                                    editor.putString("city",city);
+//                                    editor.putString("country",country);
+//                                    editor.putString("birthday",fbBirthday);
+//                                    editor.putString("email",fbEmail);
+//                                    editor.putString("gender",fbGender);
+//                                    editor.commit();
+//
+//                                    ///////
+//                                    SharedPreferences prefs = getSharedPreferences(Constants.PREF_CONST, MODE_PRIVATE);
+////                                    String restoredText = prefs.getString("text", null);
+//                                        String name = prefs.getString("name", "No name defined");//"No name defined" is the default value.
+//                                        String id = prefs.getString("idName", "0"); //0 is the default value.
+//                                        String hometown = prefs.getString("hometown","No hometown defined");
+//                                        Log.d(TAG, name);
+//                                        Log.d(TAG, String.valueOf(id));
+//                                        Log.d(TAG, hometown);
+//                                } catch (JSONException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        });
+//                Bundle parameters = new Bundle();
+//                parameters.putString("fields", "id,name,gender,email,birthday,hometown");
+//                request.setParameters(parameters);
+//                request.executeAsync();
             }
 
             @Override
@@ -114,11 +170,13 @@ public class LoginActivity extends AppCompatActivity {
         Log.d("Intent data : ", data.getDataString()+" ///ToString : "+data.toString());
         switch (requestCode) {
             case Constants.REQUEST_CODE_FSQ_CONNECT :
+                Log.d(TAG, "onActivityResult go ");
                 AuthCodeResponse codeResponse = FoursquareOAuth.getAuthCodeFromResult(resultCode, data);
                 Intent intent = FoursquareOAuth.getTokenExchangeIntent(this, Constants.CLIENT_ID, Constants.CLIENT_SECRET, codeResponse.getCode());
                 startActivityForResult(intent, Constants.REQUEST_CODE_FSQ_TOKEN_EXCHANGE);
                 break;
             case Constants.REQUEST_CODE_FSQ_TOKEN_EXCHANGE :
+                Log.d(TAG, "onActivityResult return");
                 AccessTokenResponse tokenResponse = FoursquareOAuth.getTokenFromResult(resultCode, data);
                 token = tokenResponse.getAccessToken();
                 BackgroundTask task = new BackgroundTask();
@@ -144,10 +202,10 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... params) {
-
+            Log.d(TAG,"First Line in doInnBackgrouund");
             IApiMethods methods = restAdapter.create(IApiMethods.class);
-            String date = "20151120"; // version greater than 20131017
-            FourSquareResponse searchResults = methods.search(token,date);
+                String date = "20151120"; // version greater than 20131017
+            FourSquareResponse searchResults = methods.search(token, date);
             Log.d("doInBackground : ",searchResults.meta.code);
             Log.d("Request ID : ",searchResults.meta.requestId);
             try {

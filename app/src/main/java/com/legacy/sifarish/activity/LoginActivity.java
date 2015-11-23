@@ -11,8 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -57,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
     String token ="";
     String API_URL = "https://api.foursquare.com/v2";
     CallbackManager callbackManager;
+    Button startButton;
 
     private final String TAG = "LoginActivity";
 
@@ -77,65 +76,62 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(LoginResult loginResult) {
                 Set<String> permissionSet = loginResult.getAccessToken().getPermissions();
                 String token = loginResult.getAccessToken().getToken();
-//
-//                GraphRequest request = GraphRequest.newMeRequest(
-//                        loginResult.getAccessToken(),
-//                        new GraphRequest.GraphJSONObjectCallback() {
-//                            @Override
-//                            public void onCompleted(
-//                                    JSONObject object,
-//                                    GraphResponse response) {
-//                                try {
-//                                    Log.d(TAG, "START");
-//                                    Log.d(TAG, response.toString());
-//                                    fbName = response.getJSONObject().getString("name");
-//                                    fbID = response.getJSONObject().getString("id");
-//                                    fbGender = response.getJSONObject().getString("gender");
-//                                    fbBirthday = response.getJSONObject().getString("birthday");
-//                                    fbHomeTown = response.getJSONObject().getJSONObject("hometown").getString("name");
-//                                    //split to city and country
-//                                    String splitArray[] = fbHomeTown.split(",");
-//                                    if (splitArray.length ==2) {
-//                                        city = splitArray[1];
-//                                        country = splitArray[0];
-//                                    }
-//                                    else {
-//                                        city = splitArray[1];
-//                                        country = splitArray[2];
-//                                    }
-//
-//
-//                                    fbEmail = response.getJSONObject().getString("email");
-//
-//                                    SharedPreferences.Editor editor = getSharedPreferences(Constants.PREF_CONST, MODE_PRIVATE).edit();
-//                                    editor.putString("name", fbName);
-//                                    editor.putString("idName", fbID);
-//                                    editor.putString("hometown",fbHomeTown);
-//                                    editor.putString("city",city);
-//                                    editor.putString("country",country);
-//                                    editor.putString("birthday",fbBirthday);
-//                                    editor.putString("email",fbEmail);
-//                                    editor.putString("gender",fbGender);
-//                                    editor.commit();
-//
-//                                    ///////
-//                                    SharedPreferences prefs = getSharedPreferences(Constants.PREF_CONST, MODE_PRIVATE);
-////                                    String restoredText = prefs.getString("text", null);
-//                                        String name = prefs.getString("name", "No name defined");//"No name defined" is the default value.
-//                                        String id = prefs.getString("idName", "0"); //0 is the default value.
-//                                        String hometown = prefs.getString("hometown","No hometown defined");
-//                                        Log.d(TAG, name);
-//                                        Log.d(TAG, String.valueOf(id));
-//                                        Log.d(TAG, hometown);
-//                                } catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                        });
-//                Bundle parameters = new Bundle();
-//                parameters.putString("fields", "id,name,gender,email,birthday,hometown");
-//                request.setParameters(parameters);
-//                request.executeAsync();
+
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(
+                                    JSONObject object,
+                                    GraphResponse response) {
+                                try {
+                                    Log.d(TAG, "START");
+                                    Log.d(TAG, response.toString());
+                                    fbName = response.getJSONObject().getString("name");
+                                    fbID = response.getJSONObject().getString("id");
+                                    fbGender = response.getJSONObject().getString("gender");
+                                    fbBirthday = response.getJSONObject().getString("birthday");
+                                    fbHomeTown = response.getJSONObject().getJSONObject("hometown").getString("name");
+                                    //split to city and country
+                                    String splitArray[] = fbHomeTown.split(",");
+                                    if (splitArray.length == 2) {
+                                        city = splitArray[1];
+                                        country = splitArray[0];
+                                    } else {
+                                        city = splitArray[1];
+                                        country = splitArray[2];
+                                    }
+
+
+                                    fbEmail = response.getJSONObject().getString("email");
+
+                                    SharedPreferences.Editor editor = getSharedPreferences(Constants.PREF_CONST, MODE_PRIVATE).edit();
+                                    editor.putString("name", fbName);
+                                    editor.putString("idName", fbID);
+                                    editor.putString("hometown", fbHomeTown);
+                                    editor.putString("city", city);
+                                    editor.putString("country", country);
+                                    editor.putString("birthday", fbBirthday);
+                                    editor.putString("email", fbEmail);
+                                    editor.putString("gender", fbGender);
+                                    editor.commit();
+
+                                    ///////
+                                    SharedPreferences prefs = getSharedPreferences(Constants.PREF_CONST, MODE_PRIVATE);
+                                    String name = prefs.getString("name", "No name defined");//"No name defined" is the default value.
+                                    String id = prefs.getString("idName", "0"); //0 is the default value.
+                                    String hometown = prefs.getString("hometown", "No hometown defined");
+
+                                    showStartButton();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,gender,email,birthday,hometown");
+                request.setParameters(parameters);
+                request.executeAsync();
             }
 
             @Override
@@ -159,15 +155,17 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 /////////////////////////////////////////////////////////////////////////////////////////////////
+
+        startButton = (Button) findViewById(R.id.startButton);
+
+
     }
 
 
 @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
-        Log.d("request Code : ",String.valueOf(requestCode));
-        Log.d("result Code : ",String.valueOf(resultCode));
-        Log.d("Intent data : ", data.getDataString()+" ///ToString : "+data.toString());
+
         switch (requestCode) {
             case Constants.REQUEST_CODE_FSQ_CONNECT :
                 Log.d(TAG, "onActivityResult go ");
@@ -209,7 +207,10 @@ public class LoginActivity extends AppCompatActivity {
             Log.d("doInBackground : ",searchResults.meta.code);
             Log.d("Request ID : ",searchResults.meta.requestId);
             try {
-                System.out.println("SYSO"+searchResults.toString());
+                System.out.println("SYSO" + searchResults.toString());
+                SharedPreferences.Editor editor = getSharedPreferences(Constants.PREF_CONST, MODE_PRIVATE).edit();
+                    editor.putString("checkins", searchResults.toString());
+                editor.commit();
             } catch (Exception e) {
                 System.out.print("in catch");
                 e.printStackTrace();
@@ -219,7 +220,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String curators) {
-            //textView.setText(curators + "\n\n");
+            showStartButton();
         }
     }
 
@@ -256,4 +257,20 @@ public class LoginActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void showStartButton(){
+        SharedPreferences prefs = getSharedPreferences(Constants.PREF_CONST, MODE_PRIVATE);
+        String name = prefs.getString("name", "null");//"No name defined" is the default value.
+        String checkins = prefs.getString("checkins", "null");//"No name defined" is the default value.
+        if(!name.equalsIgnoreCase("null") && !checkins.equalsIgnoreCase("null")){
+            startButton.setVisibility(View.VISIBLE);
+            startButton.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    Intent k = new Intent(LoginActivity.this,QuestionaireActivity.class);
+                    startActivity(k);
+                }
+            });
+        }
+    }
 }

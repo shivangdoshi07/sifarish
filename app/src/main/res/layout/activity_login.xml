@@ -10,25 +10,37 @@
         android:text="Connect Sifarish via"
         android:id="@+id/textViewLogin"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="130dp" />
+        android:layout_alignStart="@+id/fslogin"
+        android:layout_marginTop="154dp" />
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_below="@id/textViewLogin"
         android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+        />
 
     <Button
         android:layout_width="185dp"
         android:layout_height="35dp"
         android:text="FourSquare"
+        android:layout_marginTop="70dp"
         android:id="@+id/fslogin"
-        android:layout_above="@+id/login_button"
+        android:layout_below="@id/textViewLogin"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_below="@id/textViewLogin"
+        android:layout_marginTop="150dp"
+        android:layout_marginRight="20dp"
+        android:text="Start"
+        android:visibility="invisible"
+        android:layout_alignParentEnd="true"/>
 
 </RelativeLayout>

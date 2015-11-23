@@ -1,18 +1,20 @@
 package com.legacy.sifarish.activity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.legacy.sifarish.R;
 import com.legacy.sifarish.fragments.Question1;
@@ -20,6 +22,8 @@ import com.legacy.sifarish.fragments.Question2;
 import com.legacy.sifarish.fragments.Question3;
 import com.legacy.sifarish.fragments.Question4;
 import com.legacy.sifarish.fragments.Question5;
+import com.legacy.sifarish.interfaces.IQuestionCallback;
+import com.legacy.sifarish.util.Constants;
 
 public class QuestionaireActivity extends AppCompatActivity {
 
@@ -30,7 +34,9 @@ public class QuestionaireActivity extends AppCompatActivity {
 
     private ViewPager mPager;
 
-    private PagerAdapter mPagerAdapter;
+    private QuestionaireActivityAdapter mPagerAdapter;
+
+    private IQuestionCallback question;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,16 +49,23 @@ public class QuestionaireActivity extends AppCompatActivity {
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new QuestionaireActivityAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Snackbar.make(view, "Awesome!", Snackbar.LENGTH_LONG)
+                int currFragNumb = mPager.getCurrentItem();
+                question = (IQuestionCallback)mPagerAdapter.getRegisteredFragment(currFragNumb);
+                Snackbar.make(view, "Awesome!"+currFragNumb, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+                SharedPreferences.Editor editor = getSharedPreferences(Constants.PREF_CONST, MODE_PRIVATE).edit();
+                    editor.putString("answer_" + currFragNumb, question.getAnswer());
+                    if(currFragNumb == 4)
+                        editor.putString("all_done","true");
+                editor.commit();
+
                 if(mPager.getCurrentItem() < NUM_QUES)
-                    mPager.setCurrentItem(mPager.getCurrentItem() + 1);
+                    mPager.setCurrentItem(currFragNumb + 1);
             }
         });
     }
@@ -101,27 +114,53 @@ public class QuestionaireActivity extends AppCompatActivity {
             super(fm);
         }
 
+        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+
         @Override
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    return new Question1();
+                    question = new Question1();
+                    return  new Question1();
                 case 1:
-                    return new Question2();
+                    question =  new Question2();
+                    return  new Question2();
                 case 2:
-                    return new Question3();
+                    question =  new Question3();
+                    return  new Question3();
                 case 3:
-                    return new Question4();
+                    question =  new Question4();
+                    return  new Question4();
                 case 4:
-                    return new Question5();
+                    question =  new Question5();
+                    return  new Question5();
                 default:
-                    return new Question1();
+                    question =  new Question1();
+                    return  new Question1();
             }
+
         }
 
         @Override
         public int getCount() {
              return NUM_QUES;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            registeredFragments.put(position, fragment);
+            return fragment;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            registeredFragments.remove(position);
+            super.destroyItem(container, position, object);
+        }
+
+        public Fragment getRegisteredFragment(int position) {
+            return registeredFragments.get(position);
         }
     }
 }

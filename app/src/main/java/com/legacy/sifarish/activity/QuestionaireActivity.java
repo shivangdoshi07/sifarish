@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,17 +26,16 @@ import com.legacy.sifarish.fragments.Question5;
 import com.legacy.sifarish.interfaces.IQuestionCallback;
 import com.legacy.sifarish.util.Constants;
 
+import java.util.Map;
+
 public class QuestionaireActivity extends AppCompatActivity {
 
     /**
      * The number of questions
      */
     private static final int NUM_QUES = 5;
-
     private ViewPager mPager;
-
     private QuestionaireActivityAdapter mPagerAdapter;
-
     private IQuestionCallback question;
 
     @Override
@@ -55,13 +55,19 @@ public class QuestionaireActivity extends AppCompatActivity {
             public void onClick(View view) {
                 int currFragNumb = mPager.getCurrentItem();
                 question = (IQuestionCallback)mPagerAdapter.getRegisteredFragment(currFragNumb);
-                Snackbar.make(view, "Awesome!"+currFragNumb, Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Awesome!", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
                 SharedPreferences.Editor editor = getSharedPreferences(Constants.PREF_CONST, MODE_PRIVATE).edit();
                     editor.putString("answer_" + currFragNumb, question.getAnswer());
-                    if(currFragNumb == 4)
-                        editor.putString("all_done","true");
+                    if(currFragNumb == 4) {
+                        editor.putString("all_done", "true");
+                        SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREF_CONST, MODE_PRIVATE);
+                        Map<String, ?> allEntries = sharedPreferences.getAll();
+                        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                            Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+                        }
+                    }
                 editor.commit();
 
                 if(mPager.getCurrentItem() < NUM_QUES)
@@ -69,7 +75,6 @@ public class QuestionaireActivity extends AppCompatActivity {
             }
         });
     }
-
 
     @Override
     public void onBackPressed() {
@@ -120,22 +125,16 @@ public class QuestionaireActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    question = new Question1();
                     return  new Question1();
                 case 1:
-                    question =  new Question2();
                     return  new Question2();
                 case 2:
-                    question =  new Question3();
                     return  new Question3();
                 case 3:
-                    question =  new Question4();
                     return  new Question4();
                 case 4:
-                    question =  new Question5();
                     return  new Question5();
                 default:
-                    question =  new Question1();
                     return  new Question1();
             }
 

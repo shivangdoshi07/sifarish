@@ -102,7 +102,6 @@ public class LoginActivity extends AppCompatActivity {
                                         country = splitArray[2];
                                     }
 
-
                                     fbEmail = response.getJSONObject().getString("email");
 
                                     SharedPreferences.Editor editor = getSharedPreferences(Constants.PREF_CONST, MODE_PRIVATE).edit();
@@ -155,10 +154,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 /////////////////////////////////////////////////////////////////////////////////////////////////
-
         startButton = (Button) findViewById(R.id.startButton);
-
-
     }
 
 
@@ -264,7 +260,6 @@ public class LoginActivity extends AppCompatActivity {
         if(!name.equalsIgnoreCase("null") && !checkins.equalsIgnoreCase("null")){
             startButton.setVisibility(View.VISIBLE);
             startButton.setOnClickListener(new View.OnClickListener(){
-
                 @Override
                 public void onClick(View v) {
                     Intent k = new Intent(LoginActivity.this,QuestionaireActivity.class);

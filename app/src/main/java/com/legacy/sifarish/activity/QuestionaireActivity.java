@@ -1,6 +1,8 @@
 package com.legacy.sifarish.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,6 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.legacy.sifarish.API.IApiMethods;
+import com.legacy.sifarish.POJO.UserPost;
 import com.legacy.sifarish.R;
 import com.legacy.sifarish.fragments.Question1;
 import com.legacy.sifarish.fragments.Question2;
@@ -25,8 +29,10 @@ import com.legacy.sifarish.fragments.Question4;
 import com.legacy.sifarish.fragments.Question5;
 import com.legacy.sifarish.interfaces.IQuestionCallback;
 import com.legacy.sifarish.util.Constants;
+import com.squareup.okhttp.OkHttpClient;
 
-import java.util.Map;
+import retrofit.RestAdapter;
+import retrofit.client.OkClient;
 
 public class QuestionaireActivity extends AppCompatActivity {
 
@@ -49,6 +55,9 @@ public class QuestionaireActivity extends AppCompatActivity {
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new QuestionaireActivityAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
+
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,11 +71,8 @@ public class QuestionaireActivity extends AppCompatActivity {
                     editor.putString("answer_" + currFragNumb, question.getAnswer());
                     if(currFragNumb == 4) {
                         editor.putString("all_done", "true");
-                        SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREF_CONST, MODE_PRIVATE);
-                        Map<String, ?> allEntries = sharedPreferences.getAll();
-                        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-                            Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
-                        }
+                        AwsBackgroundTask task = new AwsBackgroundTask();
+                        task.execute();
                     }
                 editor.commit();
 
@@ -74,6 +80,7 @@ public class QuestionaireActivity extends AppCompatActivity {
                     mPager.setCurrentItem(currFragNumb + 1);
             }
         });
+
     }
 
     @Override
@@ -108,6 +115,56 @@ public class QuestionaireActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private class AwsBackgroundTask extends AsyncTask<Void, Void, String> {
+        RestAdapter restAdapter;
+
+        @Override
+        protected void onPreExecute() {
+            //retrofit settings
+
+            final OkHttpClient okHttpClient = new OkHttpClient();
+            restAdapter = new RestAdapter.Builder()
+                    .setEndpoint(Constants.AWS_URL)
+                    .setLogLevel(RestAdapter.LogLevel.FULL)
+                    .setClient(new OkClient(okHttpClient))
+                    .build();
+
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            final IApiMethods awsConnect = restAdapter.create(IApiMethods.class);
+            SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREF_CONST, MODE_PRIVATE);
+
+            String name = sharedPreferences.getString("name", "null");
+            String idName = sharedPreferences.getString("idName","null");
+            String hometown = sharedPreferences.getString("hometown","null");
+            String city = sharedPreferences.getString("city","null");
+            String country = sharedPreferences.getString("country","null");
+            String birthday = sharedPreferences.getString("country","null");
+            String email = sharedPreferences.getString("email","null");
+            String gender = sharedPreferences.getString("gender","null");
+
+            String answer_1 = sharedPreferences.getString("answer_0","null");
+            String answer_2 = sharedPreferences.getString("answer_1","null");
+            String answer_3 = sharedPreferences.getString("answer_2","null");
+            String answer_4 = sharedPreferences.getString("answer_3","null");
+            String answer_5 = sharedPreferences.getString("answer_4","null");
+
+            UserPost up = new UserPost(Long.parseLong(idName),name,birthday,email,gender,"190 Ryland Street",city,"San Jose",country,"95110",answer_1,answer_2,answer_3,answer_4,answer_5);
+            Log.d("Questionair",up.toString());
+            String obj = awsConnect.createUser(up);
+            return obj;
+        }
+
+        @Override
+        protected void onPostExecute(String curators) {
+            Intent k = new Intent(QuestionaireActivity.this,RecommendationActivity.class);
+            startActivity(k);
+        }
     }
 
     /**

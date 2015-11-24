@@ -42,6 +42,10 @@
             android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".activity.RecommendationActivity" >
         </activity>
+        <activity android:name=".activity.ItemDetailActivity" >
+        </activity>
+        <activity android:name=".activity.PurchaseActivity" >
+        </activity>
     </application>
 
 </manifest>

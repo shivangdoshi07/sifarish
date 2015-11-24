@@ -1,5 +1,7 @@
 package com.legacy.sifarish.util;
 
+import com.legacy.sifarish.POJO.RecommendationItem;
+
 public class Constants {
     public static String CLIENT_ID = "JM5PAT5BDB21OVLDNEJ4GGOJHQVWBM2FCGALM0CQTIW55221";
     public static String CLIENT_SECRET = "ZGFYAZ3AEPEFNBDIDYYN1UUSAS0ZYE2UJZ4HOCIE1LL2YBIR";
@@ -8,4 +10,5 @@ public class Constants {
     public final static String PREF_CONST = "user_details";
 
     public final static String AWS_URL = "http://ec2-54-153-29-131.us-west-1.compute.amazonaws.com:8080";
+    public static RecommendationItem ri = null;
 }

@@ -1,5 +1,6 @@
 package com.legacy.sifarish.API;
 
+import com.legacy.sifarish.POJO.BuyItem;
 import com.legacy.sifarish.POJO.FourSquareResponse;
 import com.legacy.sifarish.POJO.RecommendationItem;
 import com.legacy.sifarish.POJO.UserPost;
@@ -24,4 +25,7 @@ public interface IApiMethods {
 
     @POST("/user")
     UserPost createUser(@Body UserPost user);
+
+    @POST("/buy")
+    BuyItem buyItem(@Body BuyItem bi);
 }

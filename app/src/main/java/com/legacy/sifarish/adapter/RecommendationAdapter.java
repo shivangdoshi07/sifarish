@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.legacy.sifarish.POJO.RecommendationItem;
 import com.legacy.sifarish.R;
@@ -25,7 +26,6 @@ public class RecommendationAdapter extends BaseAdapter {
     private static LayoutInflater inflater=null;
 
     public RecommendationAdapter(RecommendationActivity mainActivity, ArrayList<RecommendationItem> ri) {
-        // TODO Auto-generated constructor stub
         this.ri = ri;
         context=mainActivity;
 
@@ -49,7 +49,7 @@ public class RecommendationAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         Holder h = new Holder();
         View rowView;
         rowView = inflater.inflate(R.layout.recommend_list_item, null);
@@ -69,9 +69,17 @@ public class RecommendationAdapter extends BaseAdapter {
 
         h.itemRestrictedSalePrice.setText(recommended.itemRestrictedSalePrice);
         h.storeId.setText(recommended.storeId);
-        new ImageDownloaderTask(h.itemMediumImage).execute(recommended.itemMediumImage);
-        h.itemMediumImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
+        if(recommended.itemMediumImage != null) {
+            new ImageDownloaderTask(h.itemMediumImage).execute(recommended.itemMediumImage);
+        }
+
+        rowView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "you clicked item: " + position, Toast.LENGTH_LONG).show();
+            }
+        });
         return rowView;
     }
 

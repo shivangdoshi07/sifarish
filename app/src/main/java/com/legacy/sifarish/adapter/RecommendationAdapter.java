@@ -8,10 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.legacy.sifarish.POJO.RecommendationItem;
 import com.legacy.sifarish.R;
 import com.legacy.sifarish.activity.RecommendationActivity;
+import com.legacy.sifarish.util.ImageDownloaderTask;
 
 import java.util.ArrayList;
 
@@ -69,7 +69,7 @@ public class RecommendationAdapter extends BaseAdapter {
 
         h.itemRestrictedSalePrice.setText(recommended.itemRestrictedSalePrice);
         h.storeId.setText(recommended.storeId);
-        UrlImageViewHelper.setUrlDrawable(h.itemMediumImage, "http://example.com/image.png");
+        new ImageDownloaderTask(h.itemMediumImage).execute(recommended.itemMediumImage);
         h.itemMediumImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         return rowView;

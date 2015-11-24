@@ -156,8 +156,8 @@ public class QuestionaireActivity extends AppCompatActivity {
 
             UserPost up = new UserPost(Long.parseLong(idName),name,birthday,email,gender,"190 Ryland Street",city,"San Jose",country,"95110",answer_1,answer_2,answer_3,answer_4,answer_5);
             Log.d("Questionair",up.toString());
-            String obj = awsConnect.createUser(up);
-            return obj;
+            up = awsConnect.createUser(up);
+            return up.toString();
         }
 
         @Override

@@ -23,5 +23,5 @@ public interface IApiMethods {
     ArrayList<RecommendationItem> getRecommendation(@Query("userId") String userId);
 
     @POST("/user")
-    String createUser(@Body UserPost user);
+    UserPost createUser(@Body UserPost user);
 }

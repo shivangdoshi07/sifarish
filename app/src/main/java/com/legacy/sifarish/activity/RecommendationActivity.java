@@ -4,10 +4,12 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ListView;
 
 import com.legacy.sifarish.API.IApiMethods;
 import com.legacy.sifarish.POJO.RecommendationItem;
 import com.legacy.sifarish.R;
+import com.legacy.sifarish.adapter.RecommendationAdapter;
 import com.legacy.sifarish.util.Constants;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -18,6 +20,7 @@ import retrofit.client.OkClient;
 
 public class RecommendationActivity extends AppCompatActivity {
 
+    ListView lv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +32,7 @@ public class RecommendationActivity extends AppCompatActivity {
 
     private class AwsBackgroundTask extends AsyncTask<Void, Void, String> {
         RestAdapter restAdapter;
-
+        ArrayList<RecommendationItem> ri = new ArrayList<>();
         @Override
         protected void onPreExecute() {
             //retrofit settings
@@ -49,13 +52,15 @@ public class RecommendationActivity extends AppCompatActivity {
             SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREF_CONST, MODE_PRIVATE);
             String idName = sharedPreferences.getString("idName","null");
 
-            ArrayList<RecommendationItem> obj = awsConnect.getRecommendation(idName);
+            ArrayList<RecommendationItem> obj = awsConnect.getRecommendation("1015380193041890");
+            ri = obj;
             return obj.size()+"";
         }
 
         @Override
         protected void onPostExecute(String curators) {
-
+            lv=(ListView) findViewById(R.id.listView);
+            lv.setAdapter(new RecommendationAdapter(RecommendationActivity.this, ri));
         }
     }
 }

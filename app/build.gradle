@@ -28,4 +28,5 @@ dependencies {
     compile 'com.foursquare:foursquare-android-oauth:1.0.3'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile 'com.koushikdutta.urlimageviewhelper:urlimageviewhelper:1.0.4'
 }

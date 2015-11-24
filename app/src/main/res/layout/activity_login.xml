@@ -1,46 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:id="@+id/activity_Login">
+    android:id="@+id/activity_Login"
+    android:background="#042141">
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Connect Sifarish via"
-        android:id="@+id/textViewLogin"
+        android:id="@+id/imageView"
+        android:src="@drawable/background"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/fslogin"
-        android:layout_marginTop="154dp" />
+        android:scaleType="centerCrop"
+        android:layout_alignParentStart="true" />
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="185dp"
+        android:layout_height="35dp"
         android:layout_gravity="center_horizontal"
-        android:layout_below="@id/textViewLogin"
-        android:layout_marginTop="30dp"
-        android:layout_centerHorizontal="true"
-        />
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="400dp" />
 
     <Button
         android:layout_width="185dp"
         android:layout_height="35dp"
         android:text="FourSquare"
-        android:layout_marginTop="70dp"
         android:id="@+id/fslogin"
-        android:layout_below="@id/textViewLogin"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginLeft="210dp"
+        android:layout_marginTop="398dp"
+        />
 
     <Button
         android:id="@+id/startButton"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
-        android:layout_below="@id/textViewLogin"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="450dp"
         android:layout_marginRight="20dp"
         android:text="Start"
         android:visibility="invisible"
         android:layout_alignParentEnd="true"/>
+
 
 </RelativeLayout>

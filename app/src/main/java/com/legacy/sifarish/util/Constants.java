@@ -11,4 +11,14 @@ public class Constants {
 
     public final static String AWS_URL = "http://ec2-54-153-29-131.us-west-1.compute.amazonaws.com:8080";
     public static RecommendationItem ri = null;
+
+    public static String stores[] = {
+            "bestbuy, San Jose Market Center",
+            "walmart, San Jose Market Center",
+            "kohls, San Jose Market Center",
+            "target, San Jose Market Center",
+            "target, 272 E Santa Clara St",
+            "costco, 272 E Santa Clara St",
+            "bestbuy, 272 E Santa Clara St"
+    };
 }

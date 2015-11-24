@@ -6,4 +6,9 @@ package com.legacy.sifarish.POJO;
 public class BuyItem {
     public Long userId;
     public Long itemId;
+
+    public BuyItem(Long userId, Long itemId) {
+        this.userId = userId;
+        this.itemId = itemId;
+    }
 }

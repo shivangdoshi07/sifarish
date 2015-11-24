@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.legacy.sifarish.API.IApiMethods;
@@ -35,7 +37,6 @@ public class RecommendationActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_questionaire, menu);
         return true;
     }
@@ -61,14 +62,12 @@ public class RecommendationActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             //retrofit settings
-
             final OkHttpClient okHttpClient = new OkHttpClient();
             restAdapter = new RestAdapter.Builder()
                     .setEndpoint(Constants.AWS_URL)
                     .setLogLevel(RestAdapter.LogLevel.FULL)
                     .setClient(new OkClient(okHttpClient))
                     .build();
-
         }
 
         @Override
@@ -88,8 +87,18 @@ public class RecommendationActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String curators) {
+            final RecommendationAdapter ra = new RecommendationAdapter(RecommendationActivity.this, ri);
             lv=(ListView) findViewById(R.id.listView);
-            lv.setAdapter(new RecommendationAdapter(RecommendationActivity.this, ri));
+            lv.setAdapter(ra);
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    RecommendationItem clicked = ra.getItem(position);
+                    Constants.ri = clicked;
+                    Intent k = new Intent(RecommendationActivity.this,ItemDetailActivity.class);
+                    startActivity(k);
+                }
+            });
         }
     }
 }

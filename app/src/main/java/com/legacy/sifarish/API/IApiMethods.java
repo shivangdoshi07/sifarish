@@ -2,6 +2,7 @@ package com.legacy.sifarish.API;
 
 import com.legacy.sifarish.POJO.BuyItem;
 import com.legacy.sifarish.POJO.FourSquareResponse;
+import com.legacy.sifarish.POJO.PurchaseItem;
 import com.legacy.sifarish.POJO.RecommendationItem;
 import com.legacy.sifarish.POJO.UserPost;
 
@@ -28,4 +29,7 @@ public interface IApiMethods {
 
     @POST("/buy")
     BuyItem buyItem(@Body BuyItem bi);
+
+    @GET("/purchaseHistory")
+    ArrayList<PurchaseItem> getHistory(@Query("userId") String userId);
 }

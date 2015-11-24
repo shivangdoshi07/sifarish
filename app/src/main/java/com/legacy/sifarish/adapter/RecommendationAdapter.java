@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.legacy.sifarish.POJO.RecommendationItem;
 import com.legacy.sifarish.R;
 import com.legacy.sifarish.activity.RecommendationActivity;
+import com.legacy.sifarish.util.Constants;
 import com.legacy.sifarish.util.ImageDownloaderTask;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class RecommendationAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public RecommendationItem getItem(int position) {
         return ri.get(position);
     }
 
@@ -67,19 +67,13 @@ public class RecommendationAdapter extends BaseAdapter {
         h.itemDepartment.setText(recommended.itemDepartment);
         h.itemShortDescription.setText(recommended.itemShortDescription);
 
-        h.itemRestrictedSalePrice.setText(recommended.itemRestrictedSalePrice);
-        h.storeId.setText(recommended.storeId);
+        h.itemRestrictedSalePrice.setText("$ "+recommended.itemRestrictedSalePrice);
+        h.storeId.setText(Constants.stores[Integer.parseInt(recommended.storeId)-1]);
 
         if(recommended.itemMediumImage != null) {
             new ImageDownloaderTask(h.itemMediumImage).execute(recommended.itemMediumImage);
         }
 
-        rowView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "you clicked item: " + position, Toast.LENGTH_LONG).show();
-            }
-        });
         return rowView;
     }
 

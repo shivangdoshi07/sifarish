@@ -54,6 +54,20 @@ public class RecommendationActivity extends AppCompatActivity {
             startActivity(k);
             return true;
         }
+
+        if(id == R.id.action_mock_location){
+            Intent k = new Intent(RecommendationActivity.this,MockLocationActivity.class);
+            startActivity(k);
+            return true;
+        }
+
+        if(id == R.id.action_logout){
+            getApplicationContext().getSharedPreferences(Constants.PREF_CONST, 0).edit().clear().commit();
+            Intent k = new Intent(RecommendationActivity.this,LoginActivity.class);
+            k.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(k);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
     private class AwsBackgroundTask extends AsyncTask<Void, Void, String> {
@@ -76,7 +90,7 @@ public class RecommendationActivity extends AppCompatActivity {
             SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREF_CONST, MODE_PRIVATE);
             String idName = sharedPreferences.getString("idName", "null");
             try{
-                ArrayList<RecommendationItem> obj = awsConnect.getRecommendation("1015380193041890");
+                ArrayList<RecommendationItem> obj = awsConnect.getRecommendation("1015380193041890",Constants.MOCK_LOCATION);
                 ri = obj;
                 return obj.size()+"";
             }catch (Exception e){

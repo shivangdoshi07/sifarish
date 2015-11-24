@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import retrofit.http.Body;
 import retrofit.http.GET;
+import retrofit.http.Headers;
 import retrofit.http.POST;
 import retrofit.http.Query;
 
@@ -22,7 +23,7 @@ public interface IApiMethods {
     );
 
     @GET("/recommend")
-    ArrayList<RecommendationItem> getRecommendation(@Query("userId") String userId);
+    ArrayList<RecommendationItem> getRecommendation(@Query("userId") String userId, @Query("storeId") String storeId);
 
     @POST("/user")
     UserPost createUser(@Body UserPost user);
@@ -30,6 +31,7 @@ public interface IApiMethods {
     @POST("/buy")
     BuyItem buyItem(@Body BuyItem bi);
 
+    @Headers("Content-Type: application/json")
     @GET("/purchaseHistory")
     ArrayList<PurchaseItem> getHistory(@Query("userId") String userId);
 }

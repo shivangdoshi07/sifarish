@@ -50,7 +50,7 @@ public class PurchaseActivity extends AppCompatActivity {
             SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREF_CONST, MODE_PRIVATE);
             String idName = sharedPreferences.getString("idName", "null");
             try{
-                ArrayList<PurchaseItem> obj = awsConnect.getHistory("1015380193041890");
+                ArrayList<PurchaseItem> obj = awsConnect.getHistory("10153801930418901");
                 ri = obj;
                 return obj.size()+"";
             }catch (Exception e){

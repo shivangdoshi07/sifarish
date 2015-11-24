@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Sifarish</string>
     <string name="action_settings">Purchase History</string>
+    <string name="action_mock_locations">Set Mock Location</string>
+    <string name="action_logout">Logout</string>
     <string name="facebook_app_id">1073773349333824</string>
 
     <string-array name="professions">
@@ -53,4 +55,5 @@
     </string-array>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

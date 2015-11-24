@@ -65,8 +65,6 @@ public class LoginActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(this);
         setContentView(R.layout.activity_login);
         alreadyLoggedIn();
-        Intent k = new Intent(LoginActivity.this,RecommendationActivity.class);
-        startActivity(k);
 
         callbackManager = CallbackManager.Factory.create();
 
@@ -278,6 +276,7 @@ public class LoginActivity extends AppCompatActivity {
         String checkins = prefs.getString("checkins", "null");//"No name defined" is the default value.
         if(!name.equalsIgnoreCase("null") && !checkins.equalsIgnoreCase("null")){
             Intent k = new Intent(LoginActivity.this,RecommendationActivity.class);
+            k.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(k);
         }
     }
